@@ -1,0 +1,70 @@
+# ============================================================
+# Kafka Common Library - Default Configuration
+# Override these in each microservice's application.yml
+# ============================================================
+
+kafka:
+  common:
+    # --- Producer Settings ---
+    producer:
+      bootstrap-servers: localhost:29092  # Docker-exposed port (see docker-compose.yml)
+      acks: all                           # Strongest durability guarantee
+      retries: 3
+      batch-size: 16384
+      linger-ms: 1
+      max-request-size: 1048576           # 1 MB
+      request-timeout-ms: 30000
+      enable-idempotence: true
+      compression-type: snappy
+
+    # --- Consumer Settings ---
+    consumer:
+      bootstrap-servers: localhost:29092  # Docker-exposed port
+      group-id: global-consumer-group
+      auto-offset-reset: earliest
+      enable-auto-commit: false           # Manual acknowledgement
+      max-poll-records: 100
+      session-timeout-ms: 30000
+      heartbeat-interval-ms: 10000
+      max-poll-interval-ms: 300000
+      concurrency: 3
+      trusted-packages: "*"
+
+    # --- Default topic (override per microservice) ---
+    topic: default-topic
+
+    # --- Retry and DLT Settings ---
+    retry:
+      max-attempts: 3
+      initial-interval-ms: 1000
+      multiplier: 2.0
+      max-interval-ms: 10000
+      dlt-suffix: "-dlt"
+      retry-suffix: "-retry"
+
+    # --- Security (PLAINTEXT for local Docker; set SASL/SSL for production) ---
+    security:
+      protocol: PLAINTEXT
+
+# ============================================================
+# Spring Kafka (library-level defaults)
+# ============================================================
+spring:
+  kafka:
+    # Override these in the importing service
+    bootstrap-servers: localhost:29092
+
+# ============================================================
+# Actuator Endpoints (expose metrics for Prometheus scraping)
+# ============================================================
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, info, metrics
+  endpoint:
+    health:
+      show-details: always
+  metrics:
+    tags:
+      application: ${spring.application.name:kafka-service}
