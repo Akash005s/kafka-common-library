@@ -189,7 +189,7 @@ This project is licensed under the MIT License.
 ## 👨‍💻 Author
 
 **Akash Maurya**
-Java Backend Developer | Spring Boot | Microservices | Kafka
+Software Engineer | Java Full Stack Developer | Spring Boot | Microservices | Kafka
 
 ---
 
